@@ -1,0 +1,16 @@
+{
+  "name": "polyform",
+  "version": "0.0.0",
+  "license": "MIT",
+  "dependencies": {
+    "es6-error": "^4.0.0",
+    "lodash": "^4.17.4"
+  },
+  "devDependencies": {
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-polyfill": "^6.16.0",
+    "babel-preset-latest": "^6.16.0",
+    "babel-register": "^6.24.1",
+    "flow-bin": "^0.51.1"
+  }
+}

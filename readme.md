@@ -1,10 +1,18 @@
-# Rebase
+# Polyform
 
-Rebase is a loosely-coupled framework for building nodejs webapps re-imagined for the modern world of containers, micro-services and hybrid apps. It is designed to make it easy to develop and deploy reusable, modular components while addressing the hard problems usually ignored by application frameworks, such as evolving live data and integration with production environments.
+Start taming the complexity of large-scale web applications with this simple mechanism for creating highly adapable and reusable components.
 
-The key concept is the **component**. Components can span across multiple tiers of an application. An application in **Rebase** consists of a collection of `component` that are integrated together via configuration at build and deploy time and via publish and subscribe message passing at run-time.
+`Polycubes` (cubes for short) are npm packages that can define both client and server-side logic. They export well-defined interfaces and configuration parameters designed to work seemly in a wide varienty different databases, middleware and front-end frameworks.
 
-For example, a component that contains http request routes should able to run both inside a nodejs application and also in the browser as a service worker.
+# Why Polyform?
+
+Simple: Use it just like plain-old packages and modules, no boilerplate.
+
+Reusable: Easy to mix and match database back-ends client-side templates, database
+
+Reliable: Static and runtime type checking. Consistent unit tests across pcubes.
+
+Production-ready: build and configuration designed for orchestration and micro-services.
 
 ## Architecture
 
@@ -12,40 +20,45 @@ Rebase's architecture consists of the following elements:
 
 **HostEnvironments** represent enviroments that components either are executed in, such as a browser environment or a Node.js app, or are "installed" in, that is modified by the component -- such as a database environment where components can update its schema.
 
-**Components** are similar to Node.js packages but they are instantiated by a `ComponentLoader` that knows how to adapt them to the application's `HostEnvironments`. Components can import interfaces and objects from the host environments as well as provide exports specialized for each environment.
+**Polycubes** are `npm` packages that knows how to adapt to the application's `HostEnvironments`. Polycubes can import interfaces and objects from the host environments as well as provide exports specialized for each environment.
 
-**Adapters** implement interfaces and "install" a component's exports. A `HostEnvironment` is essentially a collection of adapters that the `ComponentLoader` instantiates. Example adapters would be an Express adapter that knows how to add a component's request handler as an Express route or a Webpack adapter that knows how to add a component to a webpack bundle.
+**Adapters** implement interfaces and "install" a polycube's exports. A `HostEnvironment` is essentially a collection of adapters For example an Express adapter would know how to add a component's request handler as an Express route or a Webpack adapter that knows how to add a component to a webpack bundle.
 
-## Components
+## Polycubes
 
-The key features of components are:
+The key features of Polycubes are:
 
-* Components can import interfaces instead of specific modules. Compared to node.js packages this enables looser coupling between implementations but the use of interfaces enable stronger compatibility guarantees than just relying on semantic versioning strings as node.js packages do.
+* With Polyform you can import interfaces instead of specific modules. Compared to node.js packages this enables looser coupling between implementations but the use of interfaces enable stronger compatibility guarantees than just relying on semantic versioning strings as node.js packages do.
 
-* Components have exports just like Javascript modules but they must be explicitly typed with an interface and the environment has to explicitly know how to handle ("install") every exported types. When a component is loaded each export is "installed" in the host environment.
+* Cubes have exports just like Javascript modules but they must be explicitly typed with an interface and the environment has to explicitly know how to handle ("install") every exported types. When a cube is loaded each export is "installed" in the host environment.
 
-* Like Javascript modules, components are loaded recursively and installed in the order loaded.
+* Cubes can import types and objects from the environment
 
-* Components can load regular Javascript modules and other components but regular modules can not load components.
+### implementation
 
-* Components can import types and objects from the environment
+A cube packages are defined convention with thise modules:
 
-* Components can import references to components across environments (e.g a reference to a browser-side component).
+* "index.js": stub used to load the implementation in some runtimes
+* "interfaces": declares types and interfaces, may not available at runtime, generates "types"
+* "default" (optional) Contains a default implementation for the interfaces
 
-### Syntax
+## Adapters and interfaces
+* Polycubes expose load-time interfaces that other polycubes and application code can use.
+* These interfaces wrap objects and register them with the adapters associated with the interface.
+* At the end of load-time, adapters "install" the registered objects.
 
-Any module with `//@component` at top will be treated as a component by the component loader.
+## Registration/Installation/Adaptation
 
-Components interact with their environment through `import` statements that recognize the following conventions for module names:
+* Polycubes and application code can register objects with the runtime
+* Adapters and cubes export adapters in "interfaces"
+* Optional static type-checking using "import type".
+* Optional runtime type-checking; import adapters from "types" to avoid runtime type-checking; runtime type-checking only guaranteed to happen during build-time.
 
-* `!` Import from the current host environment
-* `!env!` another host environment
-* `!modulepath` treat the module as a component (in the current host environment).
-* `!env!moduleapth` threat the module as a component in the specified host environment
-* `modulepath` a regular Javascript module
+# Roadmap
 
-Components use flow's `import type` syntax to import interfaces from the environment.
-
-For exports, components use flow's type annotation to declare the interface the export implements. All exports need a type declaration and it is an error to use an interface name that has not imported from the environment.
-
-Components are transpiled to a plain module using a Babel plugin. See `test/fixtures/transpiled.js` for documentation on the translation. Once transpiled the `ComponentLoader` runs each module in a separate vm context for each host environment.
+* [X] Publish empty stub package to unblock development with Lerna etc.
+* [ ] Dependency injection runtime
+* [ ] Config infrastructure
+* [ ] Build infrastructure
+* [ ] Basic adapters
+* [ ] Routing interface

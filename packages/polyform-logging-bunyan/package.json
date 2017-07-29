@@ -1,0 +1,9 @@
+{
+  "name": "polyform-logging-bunyan",
+  "version": "0.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "peerDependencies": {
+    "polyform-logging": "*"
+  }
+}
