@@ -1,9 +1,9 @@
 {
-  "name": "example",
-  "version": "1.0.0",
+  "name": "polyform-example-app",
+  "version": "0.0.1-0",
   "license": "MIT",
   "dependencies": {
-    "polyform": "*",
-    "polyform-logging":  "*"
+    "polyform": "^0.0.1",
+    "polyform-logging": "^0.0.1"
   }
 }

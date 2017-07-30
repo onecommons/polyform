@@ -1,7 +1,19 @@
 {
   "name": "polyform",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "license": "MIT",
+  "description": "A simple micro-framework for assembling web apps out of highly re-usable components without the boilerplate.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/onecommons/polyform.git"
+  },
+  "author": {
+    "name": "Adam Souzis",
+    "email": "adam@onecommons.org"
+  },
+  "bugs": {
+    "url": "https://github.com/onecommons/polyform/issues"
+  },
   "dependencies": {
     "es6-error": "^4.0.0",
     "lodash": "^4.17.4"
