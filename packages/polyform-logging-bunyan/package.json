@@ -9,5 +9,8 @@
   },
   "peerDependencies": {
     "polyform-logging": "*"
+  },
+  "devDependencies": {
+    "flow-bin": "^0.51.1"
   }
 }
