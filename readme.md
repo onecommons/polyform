@@ -16,7 +16,7 @@ Production-ready: build and configuration designed for orchestration and micro-s
 
 ## Architecture
 
-Rebase's architecture consists of the following elements:
+Polyform's architecture consists of the following elements:
 
 **HostEnvironments** represent enviroments that components either are executed in, such as a browser environment or a Node.js app, or are "installed" in, that is modified by the component -- such as a database environment where components can update its schema.
 

@@ -1,6 +1,6 @@
 // we want to be support both transpiled and not transpiled
 function load() {
-  require('babel/register');
+  require('babel-register');
   module.exports = require('./main.js');
 }
 if (typeof process !== 'undefined' && process.env.POLYFORM_DEV) {

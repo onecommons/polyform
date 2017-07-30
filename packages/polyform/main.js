@@ -70,17 +70,6 @@ export class HostRuntime {
     return exports;
   }
 
-/*
-  loadTypes(moduleFileName: string): Object {
-    // XXX replace with generated file at build time
-    // we don't need to load interfaces at runtime
-    const interfacePath = path.join(path.dirname(moduleFileName), 'interfaces');
-    const interfaceExports = require(interfacePath);
-    // find the RuntimeInstances
-    return _.fromPairs(_.toPairs(interfaceExports).filter((k, v) => v instanceof RuntimeInstance.constructor));
-  }
-*/
-
   findAdapterForExport(exportType: string): Adapter {
     const adapter = this.types.get(exportType);
     if (!adapter) {
@@ -93,7 +82,7 @@ export class HostRuntime {
     // XXX
   }
 
-  // XXX still want this? 
+  // XXX still want this?
   updateGlobals(update: ?Object) {
     Object.assign(this.globals, update);
   }

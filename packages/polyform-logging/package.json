@@ -1,6 +1,6 @@
 {
   "name": "polyform-logging",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "MIT",
   "dependencies": {
     "polyform": "^0.0.1"
