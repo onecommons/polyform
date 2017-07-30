@@ -4,11 +4,11 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "bunyan": "^1.8.10",
-    "polyform": "*"
+    "bunyan": "^1.8.10"
   },
   "peerDependencies": {
-    "polyform-logging": "*"
+    "polyform-logging": "*",
+    "polyform": "*"
   },
   "devDependencies": {
     "flow-bin": "^0.51.1"

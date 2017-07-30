@@ -1,11 +1,14 @@
 {
-  "name": "polyform-logging",
-  "version": "0.0.2",
+  "name": "polyform-express",
+  "version": "0.0.1",
   "license": "MIT",
   "peerDependencies": {
     "polyform": "^0.0.1"
   },
   "devDependencies": {
     "flow-bin": "^0.51.1"
+  },
+  "dependencies": {
+    "express": "^4.15.3"
   }
 }
