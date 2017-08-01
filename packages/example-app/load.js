@@ -1,3 +1,6 @@
+// build.js needs to be in separate module because imports are hoisted:
+import './build.js'
+
 import {log} from "polyform-logging";
 import {registerMiddleware} from 'polyform-express'; //explicit interface
 
@@ -9,3 +12,7 @@ function test(req, res, next) {
 }
 
 registerMiddleware(test)
+
+export const config = {
+  main: './run.js'
+};

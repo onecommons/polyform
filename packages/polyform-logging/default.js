@@ -1,6 +1,6 @@
-import type {Logger} from './interfaces';
+import type {Logger as ILogger} from './interfaces';
 
-export class SimpleLogger implements Logger {
+export class SimpleLogger implements ILogger {
 
 };
 

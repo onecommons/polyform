@@ -14,23 +14,18 @@ export class CubeInstallError extends ExtendableError {
   }
 }
 
-export class HostEnvironment {
-  name: string;
-  cubes: string[];
+type onloadCallback = (HostRuntime) => void;
 
-  constructor(name: string, cubes: string[] = []) {
-    this.name = name;
-    this.cubes = cubes;
-  }
-}
-
+// Environments that support module name mapping (like webpack) don't need this at all
+// they just need this module mapped to one with an empty addCubeInterface()
 export class HostRuntime {
-  host:   HostEnvironment;
   cubes:  Map<string, PolyCube>;
+  loadModuleName: string;
+  loadHooks: onloadCallback[];
 
-  constructor(host: HostEnvironment) {
-    this.host = host;
+  constructor() {
     this.cubes = new Map();
+    this.loadHooks = [];
   }
 
   loadPolyCube(moduleFileName: string): Object {
@@ -45,10 +40,37 @@ export class HostRuntime {
     return exports;
   }
 
-  instantiate(): void {
-    // XXX
+  install(loadModuleName: string, boostrapModuleName: string): Object {
+    global.polyform = this;
+    //load whatever we need for loader module work
+    //by default this loads the built-in transpiler cube
+    if (boostrapModuleName) {
+      require(boostrapModuleName);
+    }
+    //instantiates all the cubes by loading load.js
+    const config = require(loadModuleName);
+    while (this.loadHooks.length) {
+      this.loadHooks.shift()(this);
+    }
+    return config;
   }
 
+  uninstall(): void {
+    if (global.polyform === this) {
+      //modules often have state so delete them so cache they are reloaded
+      if (require.cache) {
+        for (const exports of this.cubes.values()) {
+          delete require.cache[exports.__cube];
+        }
+      }
+      delete global.polyform;
+    }
+  }
+ }
+
+export function onLoaded(cb: (HostRuntime) => void) {
+  const polyform: HostRuntime = global.polyform;
+  polyform.loadHooks.push(cb);
 }
 
 export function addCubeInterface<T: PolyCube>(interfaceModuleName: string, dummy: ?T): (T) => void {
@@ -61,55 +83,21 @@ export function addCubeInterface<T: PolyCube>(interfaceModuleName: string, dummy
   };
 }
 
-// function adaptor<T>(instance: T, name: ?string): T {
-//   return adapt(instance, name);
-// };
-// adaptor.N = function<T>(named: {[string]: T}): T {
-//   return adaptor(...N(named));
-// }
-//
-// function N<T>(named: {[string]: T}): [T, string] {
-//   const s = Object.entries(named)[0][0];
-//   return [named[s], s];
-// }
-
-export function createRuntime(env: HostEnvironment): HostRuntime {
-   const currentHostRuntime = new HostRuntime(env);
-   global.polyform = currentHostRuntime;
-   // add adapters to currentHostRuntime, the process of which adds globals and types
-   currentHostRuntime.instantiate();
-   //currentHostRuntime and all children objects should be frozen and sealed
-   return currentHostRuntime;
+function getModuleName(root, name) {
+  return name.charAt(0) === '.' ? path.join(root, name) : name
 }
 
-function loadConfig(envName: string, config: ?Object): HostEnvironment {
-  return new HostEnvironment(envName, ['polyform-logging'])
+export function loadEnvironment(root: string, loadModuleName: string = './load', boostrapModuleName: string = ''): Object {
+    const currentHostRuntime = new HostRuntime();
+    return currentHostRuntime.install(getModuleName(root, loadModuleName), getModuleName(root, boostrapModuleName));
 }
 
 //returns module.exports
-export function loadEnvironment(root: string, envName: string = 'app', config: ?Object): any {
-  console.log('loadEnvironment', root, envName, config)
-  // try {
-    const env = loadConfig(envName, config);
-    return createRuntime(env);
-  /* }  catch (e) {
-    if (e instanceof OutOfDateBuildError) {
-      if (useStale) {
-        return e.getExports();
-      } else {
-        return rebuild();
-      }
-    } else {
-      throw e;
-    }
-  }*/
-}
-
-export default function run(root: string, main: string, config: ?Object): any {
-  loadEnvironment(root, 'app', config);
-  if (main.charAt(0) === '.') {
-    return require(path.join(root, main));
-  } else {
-    return require(main);
+export function run(root: string, loadModuleName: string): mixed {
+  const env = loadEnvironment(root, loadModuleName);
+  const main = (env.config && env.config.main) || './run';
+  if (!main) {
+    return;
   }
+  return require(getModuleName(root, main));
 }

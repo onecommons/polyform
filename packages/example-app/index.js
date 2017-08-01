@@ -1,1 +1,1 @@
-require('polyform')(__dirname, './app.js');
+require('polyform').run(__dirname);
