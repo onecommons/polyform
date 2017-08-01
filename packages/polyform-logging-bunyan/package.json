@@ -1,14 +1,14 @@
 {
   "name": "polyform-logging-bunyan",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
     "bunyan": "^1.8.10"
   },
   "peerDependencies": {
-    "polyform-logging": "*",
-    "polyform": "*"
+    "polyform": "*",
+    "polyform-logging": "*"
   },
   "devDependencies": {
     "flow-bin": "^0.51.1"
